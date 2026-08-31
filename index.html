@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>كاميرا وليد</title>
+<title>كاميرا وليد - بث مباشر</title>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 
 <style>
 body{
@@ -11,28 +13,65 @@ body{
   min-height:100vh;
   background:#111;
   color:white;
-  font-family:Arial;
+  font-family:Arial,sans-serif;
   text-align:center;
   display:flex;
   justify-content:center;
   align-items:center;
 }
+
 .container{
-  width:90%;
-  max-width:600px;
+  width:92%;
+  max-width:650px;
 }
+
+h1{
+  margin-bottom:8px;
+}
+
+p{
+  color:#bbb;
+}
+
 button{
-  padding:15px 25px;
+  padding:14px 22px;
+  margin:7px;
   border:0;
   border-radius:12px;
-  font-size:18px;
+  font-size:17px;
   cursor:pointer;
 }
+
+input{
+  padding:14px;
+  width:80%;
+  max-width:400px;
+  border:0;
+  border-radius:10px;
+  font-size:17px;
+  text-align:center;
+  margin:8px;
+}
+
 video{
   width:100%;
   margin-top:20px;
-  border-radius:15px;
+  border-radius:16px;
   background:#000;
+}
+
+.box{
+  background:#1c1c1c;
+  padding:20px;
+  border-radius:18px;
+  margin-top:15px;
+}
+
+#myId{
+  font-size:24px;
+  font-weight:bold;
+  color:#55ffae;
+  word-break:break-all;
 }
 </style>
 </head>
@@ -40,27 +79,144 @@ video{
 <body>
 
 <div class="container">
-  <h1>كاميرا وليد</h1>
-  <p>اضغط الزر للسماح باستخدام الكاميرا</p>
 
-  <button onclick="startCamera()">تشغيل الكاميرا</button>
+<h1>كاميرا وليد</h1>
 
-  <video id="camera" autoplay playsinline></video>
+<div class="box">
+
+<h2>📡 التابلت — إرسال الكاميرا</h2>
+
+<button onclick="startCamera()">تشغيل الكاميرا</button>
+
+<p>رمز التابلت:</p>
+<div id="myId">جاري إنشاء الرمز...</div>
+
+<video id="localVideo" autoplay playsinline muted></video>
+
+</div>
+
+<div class="box">
+
+<h2>📱 S21 Ultra — مشاهدة البث</h2>
+
+<input id="remoteId" placeholder="اكتب رمز التابلت هنا">
+
+<br>
+
+<button onclick="watchCamera()">مشاهدة الكاميرا</button>
+
+<video id="remoteVideo" autoplay playsinline controls></video>
+
+</div>
+
+<p id="status">الحالة: جاهز</p>
+
 </div>
 
 <script>
+
+let peer;
+let localStream = null;
+
+peer = new Peer();
+
+peer.on("open", function(id){
+  document.getElementById("myId").textContent = id;
+  document.getElementById("status").textContent =
+    "الحالة: جاهز — الرمز تم إنشاؤه";
+});
+
+peer.on("error", function(error){
+  console.log(error);
+  document.getElementById("status").textContent =
+    "حدث خطأ في الاتصال";
+});
+
 async function startCamera(){
+
   try{
-    const stream = await navigator.mediaDevices.getUserMedia({
+
+    localStream = await navigator.mediaDevices.getUserMedia({
       video:true,
       audio:false
     });
 
-    document.getElementById("camera").srcObject = stream;
+    document.getElementById("localVideo").srcObject = localStream;
+
+    document.getElementById("status").textContent =
+      "الكاميرا تعمل — أرسل الرمز للجهاز الآخر";
+
   }catch(error){
-    alert("لم يتم السماح باستخدام الكاميرا");
+
+    alert("يجب السماح للمتصفح باستخدام الكاميرا");
+
+    console.log(error);
   }
 }
+
+function watchCamera(){
+
+  const remoteId =
+    document.getElementById("remoteId").value.trim();
+
+  if(!remoteId){
+    alert("اكتب رمز التابلت أولاً");
+    return;
+  }
+
+  document.getElementById("status").textContent =
+    "جاري الاتصال بالتابلت...";
+
+  const call = peer.call(remoteId, null);
+
+  call.on("stream", function(remoteStream){
+
+    document.getElementById("remoteVideo").srcObject =
+      remoteStream;
+
+    document.getElementById("status").textContent =
+      "🟢 البث مباشر";
+
+  });
+
+  call.on("close", function(){
+
+    document.getElementById("status").textContent =
+      "انتهى البث";
+
+  });
+
+  call.on("error", function(error){
+
+    console.log(error);
+
+    document.getElementById("status").textContent =
+      "فشل الاتصال";
+
+  });
+}
+
+peer.on("call", function(call){
+
+  if(localStream){
+
+    call.answer(localStream);
+
+    call.on("stream", function(remoteStream){
+
+      // لا نحتاج عرض بث الطرف الآخر هنا
+      console.log("تم الاتصال");
+
+    });
+
+  }else{
+
+    call.answer();
+
+  }
+
+});
+
 </script>
 
 </body>
