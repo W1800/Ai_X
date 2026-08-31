@@ -118,7 +118,13 @@ video{
 let peer;
 let localStream = null;
 
-peer = new Peer();
+peer = new Peer({
+  host: "0.peerjs.com",
+  port: 443,
+  secure: true,
+  path: "/",
+  debug: 3
+});
 
 peer.on("open", function(id){
   document.getElementById("myId").textContent = id;
