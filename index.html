@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>كاميرا وليد - بث مباشر</title>
 
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 
 <style>
+*{
+  box-sizing:border-box;
+}
+
 body{
   margin:0;
   min-height:100vh;
@@ -15,27 +21,28 @@ body{
   color:white;
   font-family:Arial,sans-serif;
   text-align:center;
-  display:flex;
-  justify-content:center;
-  align-items:center;
 }
 
 .container{
   width:92%;
   max-width:650px;
+  margin:25px auto;
 }
 
 h1{
-  margin-bottom:8px;
+  margin-bottom:25px;
 }
 
-p{
-  color:#bbb;
+.box{
+  background:#1d1d1d;
+  padding:20px;
+  margin:15px 0;
+  border-radius:18px;
 }
 
 button{
   padding:14px 22px;
-  margin:7px;
+  margin:8px;
   border:0;
   border-radius:12px;
   font-size:17px;
@@ -43,35 +50,42 @@ button{
 }
 
 input{
+  width:90%;
+  max-width:450px;
   padding:14px;
-  width:80%;
-  max-width:400px;
   border:0;
   border-radius:10px;
   font-size:17px;
   text-align:center;
-  margin:8px;
 }
 
 video{
   width:100%;
-  margin-top:20px;
-  border-radius:16px;
+  margin-top:15px;
+  border-radius:15px;
   background:#000;
 }
 
-.box{
-  background:#1c1c1c;
-  padding:20px;
-  border-radius:18px;
-  margin-top:15px;
+#myId{
+  margin:15px 0;
+  padding:12px;
+  background:#000;
+  border-radius:10px;
+  color:#55ffae;
+  font-size:20px;
+  font-weight:bold;
+  word-break:break-all;
 }
 
-#myId{
-  font-size:24px;
-  font-weight:bold;
+#status{
   color:#55ffae;
-  word-break:break-all;
+  font-weight:bold;
+  margin:20px;
+}
+
+.small{
+  color:#aaa;
+  font-size:14px;
 }
 </style>
 </head>
@@ -80,148 +94,360 @@ video{
 
 <div class="container">
 
-<h1>كاميرا وليد</h1>
+<h1>📷 كاميرا وليد</h1>
 
+<!-- التابلت -->
 <div class="box">
 
 <h2>📡 التابلت — إرسال الكاميرا</h2>
 
-<button onclick="startCamera()">تشغيل الكاميرا</button>
+<button onclick="startCamera()">
+تشغيل كاميرا التابلت
+</button>
 
 <p>رمز التابلت:</p>
-<div id="myId">جاري إنشاء الرمز...</div>
 
-<video id="localVideo" autoplay playsinline muted></video>
+<div id="myId">
+جاري إنشاء الرمز...
+</div>
+
+<p class="small">
+أرسل هذا الرمز إلى جهاز S21 Ultra
+</p>
+
+<video
+id="localVideo"
+autoplay
+playsinline
+muted>
+</video>
 
 </div>
 
+
+<!-- الجوال -->
 <div class="box">
 
 <h2>📱 S21 Ultra — مشاهدة البث</h2>
 
-<input id="remoteId" placeholder="اكتب رمز التابلت هنا">
+<input
+id="remoteId"
+placeholder="الصق رمز التابلت هنا">
 
 <br>
 
-<button onclick="watchCamera()">مشاهدة الكاميرا</button>
+<button onclick="watchCamera()">
+مشاهدة البث
+</button>
 
-<video id="remoteVideo" autoplay playsinline controls></video>
+<video
+id="remoteVideo"
+autoplay
+playsinline
+controls>
+</video>
 
 </div>
 
-<p id="status">الحالة: جاهز</p>
+
+<p id="status">
+الحالة: جاري الاتصال...
+</p>
 
 </div>
+
 
 <script>
 
-let peer;
+/* =========================================
+   إنشاء اتصال PeerJS
+   ========================================= */
+
+let peer = null;
 let localStream = null;
 
-peer = new Peer({
-  host: "0.peerjs.com",
-  port: 443,
-  secure: true,
-  path: "/",
-  debug: 3
-});
 
-peer.on("open", function(id){
-  document.getElementById("myId").textContent = id;
-  document.getElementById("status").textContent =
-    "الحالة: جاهز — الرمز تم إنشاؤه";
-});
+/* التحقق من تحميل PeerJS */
 
-peer.on("error", function(error){
-  console.log(error);
+if(typeof Peer === "undefined"){
+
   document.getElementById("status").textContent =
-    "حدث خطأ في الاتصال";
-});
+  "❌ مكتبة الاتصال لم يتم تحميلها";
+
+}else{
+
+  createPeer();
+
+}
+
+
+/* إنشاء Peer */
+
+function createPeer(){
+
+  document.getElementById("status").textContent =
+  "🟡 جاري الاتصال بخادم الاتصال...";
+
+  /*
+    لا نحدد host أو path يدويًا.
+    PeerJS يستخدم Cloud تلقائيًا.
+  */
+
+  peer = new Peer();
+
+
+  /* عندما يتم إنشاء رمز الجهاز */
+
+  peer.on("open", function(id){
+
+    document.getElementById("myId").textContent =
+    id;
+
+    document.getElementById("status").textContent =
+    "🟢 جاهز — رمز التابلت ظهر";
+
+  });
+
+
+  /* أخطاء الاتصال */
+
+  peer.on("error", function(error){
+
+    console.log("PeerJS error:", error);
+
+    document.getElementById("status").textContent =
+    "❌ خطأ: " + error.type;
+
+  });
+
+
+  /* انقطاع الاتصال */
+
+  peer.on("disconnected", function(){
+
+    document.getElementById("status").textContent =
+    "🟠 انقطع الاتصال — جاري إعادة الاتصال...";
+
+    try{
+      peer.reconnect();
+    }catch(e){
+      console.log(e);
+    }
+
+  });
+
+
+  /*
+    عندما يتصل جهاز S21 Ultra بالتابلت
+  */
+
+  peer.on("call", function(call){
+
+    console.log("Incoming call");
+
+    if(!localStream){
+
+      call.close();
+
+      document.getElementById("status").textContent =
+      "❌ شغّل كاميرا التابلت أولًا";
+
+      return;
+    }
+
+
+    /*
+      إرسال كاميرا التابلت إلى S21 Ultra
+    */
+
+    call.answer(localStream);
+
+
+    document.getElementById("status").textContent =
+    "🟢 تم الاتصال — البث يعمل";
+
+  });
+
+}
+
+
+/* =========================================
+   تشغيل كاميرا التابلت
+   ========================================= */
 
 async function startCamera(){
 
   try{
 
-    localStream = await navigator.mediaDevices.getUserMedia({
-      video:true,
+    localStream =
+    await navigator.mediaDevices.getUserMedia({
+
+      video:{
+        facingMode:"environment"
+      },
+
       audio:false
+
     });
 
-    document.getElementById("localVideo").srcObject = localStream;
+
+    document.getElementById("localVideo").srcObject =
+    localStream;
+
 
     document.getElementById("status").textContent =
-      "الكاميرا تعمل — أرسل الرمز للجهاز الآخر";
+    "🟢 الكاميرا تعمل — أرسل الرمز للجوال";
+
 
   }catch(error){
 
-    alert("يجب السماح للمتصفح باستخدام الكاميرا");
-
     console.log(error);
+
+    document.getElementById("status").textContent =
+    "❌ لم يتم السماح بالكاميرا";
+
   }
+
 }
+
+
+/* =========================================
+   إنشاء بث وهمي لجهاز المشاهدة
+   ========================================= */
+
+function createViewerStream(){
+
+  const canvas =
+  document.createElement("canvas");
+
+  canvas.width = 320;
+  canvas.height = 240;
+
+  const ctx =
+  canvas.getContext("2d");
+
+  ctx.fillStyle = "#000";
+  ctx.fillRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  ctx.fillStyle = "#fff";
+  ctx.font = "20px Arial";
+  ctx.textAlign = "center";
+
+  ctx.fillText(
+    "S21 Ultra",
+    160,
+    120
+  );
+
+  return canvas.captureStream(5);
+
+}
+
+
+/* =========================================
+   S21 Ultra يطلب البث
+   ========================================= */
 
 function watchCamera(){
 
   const remoteId =
-    document.getElementById("remoteId").value.trim();
+  document.getElementById("remoteId").value.trim();
+
 
   if(!remoteId){
-    alert("اكتب رمز التابلت أولاً");
+
+    alert("الصق رمز التابلت أولًا");
+
     return;
   }
 
-  document.getElementById("status").textContent =
-    "جاري الاتصال بالتابلت...";
 
-  const call = peer.call(remoteId, null);
+  if(!peer){
+
+    alert("الاتصال لم يجهز بعد");
+
+    return;
+  }
+
+
+  document.getElementById("status").textContent =
+  "🟡 جاري الاتصال بالتابلت...";
+
+
+  /*
+    نرسل Stream وهمي فقط لإنشاء المكالمة.
+    التابلت سيرد بكاميرته الحقيقية.
+  */
+
+  const viewerStream =
+  createViewerStream();
+
+
+  const call =
+  peer.call(
+    remoteId,
+    viewerStream
+  );
+
+
+  if(!call){
+
+    document.getElementById("status").textContent =
+    "❌ تعذر إنشاء الاتصال";
+
+    return;
+  }
+
+
+  /* استلام كاميرا التابلت */
 
   call.on("stream", function(remoteStream){
 
-    document.getElementById("remoteVideo").srcObject =
-      remoteStream;
+    const video =
+    document.getElementById("remoteVideo");
+
+    video.srcObject =
+    remoteStream;
+
+
+    video.play().catch(function(){
+
+      console.log(
+        "اضغط تشغيل الفيديو يدويًا"
+      );
+
+    });
+
 
     document.getElementById("status").textContent =
-      "🟢 البث مباشر";
+    "🟢 البث مباشر";
 
   });
+
 
   call.on("close", function(){
 
     document.getElementById("status").textContent =
-      "انتهى البث";
+    "🟠 انتهى البث";
 
   });
+
 
   call.on("error", function(error){
 
     console.log(error);
 
     document.getElementById("status").textContent =
-      "فشل الاتصال";
+    "❌ فشل الاتصال";
 
   });
+
 }
-
-peer.on("call", function(call){
-
-  if(localStream){
-
-    call.answer(localStream);
-
-    call.on("stream", function(remoteStream){
-
-      // لا نحتاج عرض بث الطرف الآخر هنا
-      console.log("تم الاتصال");
-
-    });
-
-  }else{
-
-    call.answer();
-
-  }
-
-});
 
 </script>
 
