@@ -3,88 +3,123 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Tiki | روابط حساباتي</title>
 
 <style>
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: Arial, sans-serif;
-  background: #f1dfcf;
-  color: #5b3925;
-  text-align: center;
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: #4b382d;
+    text-align: center;
+
+    background-image:
+        linear-gradient(rgba(245,225,205,0.45), rgba(245,225,205,0.45)),
+        url("IMG-20260901-WA0007.jpg");
+
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 .container {
-  width: 92%;
-  max-width: 600px;
-  margin: auto;
-  padding: 25px 0 40px;
+    width: 92%;
+    max-width: 680px;
+    margin: auto;
+    padding: 35px 15px;
 }
 
 .avatar {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 5px solid #fff;
-  box-shadow: 0 0 20px rgba(120,70,30,.35);
-  margin-top: 15px;
+    width: 145px;
+    height: 145px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid white;
+    box-shadow: 0 5px 25px rgba(80,40,20,.35);
 }
 
 h1 {
-  margin: 15px 0 5px;
-  font-size: 32px;
+    margin: 12px 0 5px;
+    font-size: 34px;
 }
 
 .subtitle {
-  font-size: 18px;
-  margin-bottom: 25px;
+    font-size: 18px;
+    margin-bottom: 30px;
 }
 
 .link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  text-decoration: none;
-  color: #5b3925;
-  background: rgba(255,255,255,.65);
-  border: 2px solid #b88962;
-  border-radius: 18px;
-  padding: 14px 18px;
-  margin: 14px 0;
-  font-size: 19px;
-  font-weight: bold;
-  transition: .2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    direction: ltr;
+
+    width: 100%;
+    min-height: 82px;
+    margin: 16px 0;
+    padding: 12px 20px;
+
+    background: rgba(255,255,255,.88);
+    border: 2px solid #b99473;
+    border-radius: 22px;
+
+    text-decoration: none;
+    color: #4b382d;
+
+    transition: .2s;
 }
 
 .link:hover {
-  transform: scale(1.02);
+    transform: scale(1.02);
+}
+
+.link-name {
+    direction: rtl;
+    font-size: 21px;
+    font-weight: bold;
 }
 
 .icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 25px;
-  color: white;
+    width: 55px;
+    height: 55px;
+    border-radius: 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
 }
 
-.youtube { background: #ff0000; }
-.instagram { background: linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045); }
-.facebook { background: #1877f2; }
-.tiktok { background: #111; }
+.icon svg {
+    width: 32px;
+    height: 32px;
+}
+
+.youtube {
+    background: #ff0000;
+}
+
+.instagram {
+    background: linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5);
+}
+
+.facebook {
+    background: #1877f2;
+}
+
+.tiktok {
+    background: #000;
+}
 
 footer {
-  margin-top: 30px;
-  font-size: 14px;
+    margin-top: 35px;
+    font-size: 14px;
 }
 </style>
 </head>
@@ -93,32 +128,72 @@ footer {
 
 <div class="container">
 
-  <img class="avatar" src="https://raw.githubusercontent.com/W1800/Alwlaeed/main/Screenshot_PUBG%20MOBILE_..." alt="Tiki">
+<img class="avatar" src="IMG-20260901-WA0006.jpg">
 
-  <h1>Tiki</h1>
-  <div class="subtitle">روابط حساباتي</div>
+<h1>Tiki</h1>
 
-  <a class="link" href="https://youtube.com/@tikiworld-1" target="_blank">
-    <span>YouTube</span>
-    <span class="icon youtube">▶</span>
-  </a>
+<div class="subtitle">روابط حساباتي</div>
 
-  <a class="link" href="https://www.instagram.com/tiki_world99" target="_blank">
-    <span>Instagram</span>
-    <span class="icon instagram">◎</span>
-  </a>
+<a class="link"
+href="https://youtube.com/@tikiworld-1?si=CSEfFuumvsdpc50y"
+target="_blank">
 
-  <a class="link" href="https://www.facebook.com/share/1EzZz6iwHf/" target="_blank">
-    <span>Facebook</span>
-    <span class="icon facebook">f</span>
-  </a>
+<div class="icon youtube">
+<svg viewBox="0 0 24 24" fill="white">
+<path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.9V8.1l6.8 3.9-6.8 3.9z"/>
+</svg>
+</div>
 
-  <a class="link" href="https://www.tiktok.com/@tikis.world1" target="_blank">
-    <span>TikTok</span>
-    <span class="icon tiktok">♪</span>
-  </a>
+<span class="link-name">YouTube</span>
+</a>
 
-  <footer>© 2026 Tiki</footer>
+
+<a class="link"
+href="https://www.instagram.com/tiki_world99?igsi=MXNrOWxxMGdpZDhjag=="
+target="_blank">
+
+<div class="icon instagram">
+<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+<rect x="3" y="3" width="18" height="18" rx="5"/>
+<circle cx="12" cy="12" r="4"/>
+<circle cx="17.5" cy="6.5" r="1"/>
+</svg>
+</div>
+
+<span class="link-name">Instagram</span>
+</a>
+
+
+<a class="link"
+href="https://www.facebook.com/share/1EzZz6iwHf/"
+target="_blank">
+
+<div class="icon facebook">
+<svg viewBox="0 0 24 24" fill="white">
+<path d="M14 8h3V4h-3c-3.3 0-5 2-5 5v3H6v4h3v6h4v-6h3l1-4h-4V9c0-.7.3-1 1-1z"/>
+</svg>
+</div>
+
+<span class="link-name">Facebook</span>
+</a>
+
+
+<a class="link"
+href="https://www.tiktok.com/@tikis.world1?_r=1&_t=ZS-99N4whgnfXk"
+target="_blank">
+
+<div class="icon tiktok">
+<svg viewBox="0 0 24 24" fill="white">
+<path d="M15 3c.3 2.5 1.7 4 4 4v3c-1.6 0-3-.5-4-1.3V15a6 6 0 1 1-6-6h1v3H9a3 3 0 1 0 3 3V3h3z"/>
+</svg>
+</div>
+
+<span class="link-name">TikTok</span>
+</a>
+
+<footer>
+Tiki 2026 ©
+</footer>
 
 </div>
 
