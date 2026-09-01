@@ -1,42 +1,153 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>فحص الجهاز</title>
+
 <style>
-html, body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+* {
+  box-sizing: border-box;
 }
 
 body {
-    background: #000;
-    animation: flash 0.7s infinite;
+  margin: 0;
+  background: #050505;
+  color: #00ff66;
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
-@keyframes flash {
-    0%, 85% {
-        background: #000;
-    }
+.box {
+  width: 90%;
+  max-width: 500px;
+}
 
-    90% {
-        background: #fff;
-    }
+h1 {
+  font-size: 30px;
+}
 
-    95% {
-        background: #ddd;
-    }
+#status {
+  margin: 25px 0;
+  font-size: 20px;
+}
 
-    100% {
-        background: #000;
-    }
+.bar {
+  width: 100%;
+  height: 18px;
+  border: 1px solid #00ff66;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.progress {
+  width: 0%;
+  height: 100%;
+  background: #00ff66;
+  transition: width .2s;
+}
+
+.warning {
+  display: none;
+  color: #ff3030;
+}
+
+.prank {
+  display: none;
+  color: white;
+}
+
+button {
+  margin-top: 25px;
+  padding: 14px 30px;
+  border: 0;
+  border-radius: 12px;
+  font-size: 18px;
 }
 </style>
 </head>
 
 <body>
+
+<div class="box">
+
+  <div id="loading">
+    <h1>🔍 جاري فحص الجهاز</h1>
+
+    <div id="status">جارٍ بدء الفحص...</div>
+
+    <div class="bar">
+      <div class="progress" id="progress"></div>
+    </div>
+  </div>
+
+  <div class="warning" id="warning">
+    <h1>⚠️ تحذير!</h1>
+    <h2>تم اكتشاف نشاط غير طبيعي</h2>
+    <p>جاري تأمين الجهاز...</p>
+  </div>
+
+  <div class="prank" id="prank">
+    <h1>😂 انضحك عليك!</h1>
+    <h2>مجرد مقلب</h2>
+    <p>جهازك سليم وما صار له شيء.</p>
+    <button onclick="location.reload()">🔄 مرة ثانية</button>
+  </div>
+
+</div>
+
+<script>
+
+let progress = 0;
+
+const progressBar = document.getElementById("progress");
+const status = document.getElementById("status");
+
+const messages = [
+  "جارٍ فحص الملفات...",
+  "جارٍ فحص النظام...",
+  "جارٍ تحليل التطبيقات...",
+  "جارٍ التحقق من الأمان...",
+  "جارٍ إنهاء الفحص..."
+];
+
+let messageIndex = 0;
+
+const timer = setInterval(() => {
+
+  progress += Math.floor(Math.random() * 8) + 3;
+
+  if (progress >= 100) {
+    progress = 100;
+    clearInterval(timer);
+
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("warning").style.display = "block";
+
+    setTimeout(() => {
+
+      document.getElementById("warning").style.display = "none";
+      document.getElementById("prank").style.display = "block";
+
+    }, 3000);
+
+  }
+
+  progressBar.style.width = progress + "%";
+
+  if (messageIndex < messages.length) {
+    status.textContent = messages[messageIndex];
+    messageIndex++;
+  }
+
+}, 500);
+
+</script>
+
 </body>
 </html>
