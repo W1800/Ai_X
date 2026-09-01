@@ -126,7 +126,48 @@
     const input = document.getElementById("input");
     const chat = document.getElementById("chat");
 
-    function sendMessage() {
+    async function sendMessage() {
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  const userMessage = document.createElement("div");
+  userMessage.className = "message user";
+  userMessage.textContent = text;
+
+  chat.appendChild(userMessage);
+  input.value = "";
+  chat.scrollTop = chat.scrollHeight;
+
+  const aiMessage = document.createElement("div");
+  aiMessage.className = "message ai";
+  aiMessage.textContent = "جاري التفكير...";
+  chat.appendChild(aiMessage);
+
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: text
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "حدث خطأ");
+    }
+
+    aiMessage.textContent = data.reply || "لم يصل رد من الذكاء الاصطناعي.";
+  } catch (error) {
+    aiMessage.textContent = "حدث خطأ: " + error.message;
+  }
+
+  chat.scrollTop = chat.scrollHeight;
+    }
       const text = input.value.trim();
 
       if (!text) return;
