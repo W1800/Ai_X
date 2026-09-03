@@ -301,156 +301,128 @@ button:hover{
 
 
 <script>
+async function scan(){
 
-function scan(){
+    const input = document.getElementById("urlInput");
+    const result = document.getElementById("result");
 
-    const input =
-        document.getElementById("urlInput");
-
-    const result =
-        document.getElementById("result");
-
-    let value =
-        input.value.trim();
-
+    let value = input.value.trim();
 
     if(!value){
-
-        showResult(
-            "red",
-            "أدخل رابطًا أولًا."
-        );
-
+        showResult("red", "أدخل رابطًا أولاً.");
         return;
     }
-
 
     if(!/^https?:\/\//i.test(value)){
         value = "https://" + value;
     }
 
-
-    let url;
-
     try{
-
-        url = new URL(value);
-
+        new URL(value);
     }catch{
-
-        showResult(
-            "red",
-            "الرابط غير صالح."
-        );
-
+        showResult("red", "الرابط غير صحيح.");
         return;
     }
 
-
-    const hostname =
-        url.hostname.toLowerCase();
-
-
-    let warnings = [];
-
-
-    if(url.protocol !== "https:"){
-        warnings.push(
-            "الرابط لا يستخدم HTTPS."
-        );
-    }
-
-
-    if(hostname.includes("xn--")){
-        warnings.push(
-            "النطاق يستخدم ترميزًا قد يخفي أحرفًا مشابهة."
-        );
-    }
-
-
-    if(hostname.split(".").length > 4){
-        warnings.push(
-            "النطاق يحتوي على مستويات كثيرة."
-        );
-    }
-
-
-    if(hostname.length > 60){
-        warnings.push(
-            "اسم النطاق طويل بشكل غير معتاد."
-        );
-    }
-
-
-    if(warnings.length === 0){
-
-        result.innerHTML = `
-
-            <div class="result-title">
-                الفحص المبدئي
-            </div>
-
-            <div class="status green">
-                ✓ لم تظهر مؤشرات واضحة على الخطر
-            </div>
-
-            <div class="info">
-                <strong>النطاق:</strong>
-                ${escapeHtml(hostname)}
-            </div>
-
-            <div class="info">
-                <strong>البروتوكول:</strong>
-                ${escapeHtml(url.protocol)}
-            </div>
-
-            <div class="info">
-                <strong>الرابط:</strong>
-                ${escapeHtml(url.href)}
-            </div>
-
-            <div class="note">
-                هذه نتيجة فحص مبدئي وليست ضمانًا بأن الرابط آمن.
-                سيتم في المرحلة التالية ربط الموقع بمحرك فحص أمني حقيقي.
-            </div>
-
-        `;
-
-    }else{
-
-        result.innerHTML = `
-
-            <div class="result-title">
-                الفحص المبدئي
-            </div>
-
-            <div class="status yellow">
-                ⚠️ توجد مؤشرات تحتاج إلى الحذر
-            </div>
-
-            <div class="info">
-                <strong>النطاق:</strong>
-                ${escapeHtml(hostname)}
-            </div>
-
-            <div class="info yellow">
-                <strong>الملاحظات:</strong><br>
-                ${warnings.map(
-                    x => "• " + escapeHtml(x)
-                ).join("<br>")}
-            </div>
-
-            <div class="note">
-                لا تفتح الرابط إذا كنت لا تثق بمصدره.
-                سيتم لاحقًا إضافة فحص متعدد المصادر.
-            </div>
-
-        `;
-    }
-
-
     result.style.display = "block";
+    result.innerHTML = `
+        <div class="status">
+            جاري فحص الرابط عبر VirusTotal...
+        </div>
+    `;
+
+    try{
+
+        const response = await fetch("/api/scan", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                url: value
+            })
+        });
+
+        const data = await response.json();
+
+        if(!response.ok){
+            throw new Error(data.error || "فشل الفحص");
+        }
+
+        if(data.type === "report"){
+
+            const attributes = data.data.attributes || {};
+            const stats = attributes.last_analysis_stats || {};
+
+            const malicious = stats.malicious || 0;
+            const suspicious = stats.suspicious || 0;
+            const harmless = stats.harmless || 0;
+            const undetected = stats.undetected || 0;
+
+            if(malicious > 0){
+
+                showResult(
+                    "red",
+                    `
+                    <h3>⚠️ الرابط خطر</h3>
+                    <p>اكتشف VirusTotal أن ${malicious} محركًا أمنيًا صنّف الرابط كضار.</p>
+                    <p>مشبوه: ${suspicious}</p>
+                    <p>سليم: ${harmless}</p>
+                    <p>غير مكتشف: ${undetected}</p>
+                    `
+                );
+
+            }else if(suspicious > 0){
+
+                showResult(
+                    "yellow",
+                    `
+                    <h3>⚠️ الرابط مشبوه</h3>
+                    <p>تم تصنيفه كمشبوه بواسطة ${suspicious} محركًا.</p>
+                    <p>ضار: ${malicious}</p>
+                    <p>سليم: ${harmless}</p>
+                    <p>غير مكتشف: ${undetected}</p>
+                    `
+                );
+
+            }else{
+
+                showResult(
+                    "green",
+                    `
+                    <h3>✅ لم يتم اكتشاف تهديد</h3>
+                    <p>لم تجد محركات VirusTotal تهديدًا معروفًا لهذا الرابط.</p>
+                    <p>سليم: ${harmless}</p>
+                    <p>غير مكتشف: ${undetected}</p>
+                    `
+                );
+            }
+
+        }else if(data.type === "analysis"){
+
+            showResult(
+                "yellow",
+                `
+                <h3>🔍 بدأ الفحص</h3>
+                <p>تم إرسال الرابط إلى VirusTotal للتحليل.</p>
+                <p>أعد الفحص بعد لحظات للحصول على النتيجة الكاملة.</p>
+                `
+            );
+
+        }
+
+    }catch(error){
+
+        showResult(
+            "red",
+            `❌ ${escapeHtml(error.message)}`
+        );
+
+    }
 }
+
+    
+
 
 
 function showResult(type,text){
