@@ -410,7 +410,9 @@ async function scan(){
             );
 
         }
-
+if(data.securityChecks){
+  showSecurityChecks(data.securityChecks);
+}
     }catch(error){
 
         showResult(
@@ -423,7 +425,70 @@ async function scan(){
 
     
 
+function showSecurityChecks(checks){
 
+  const result = document.getElementById("result");
+
+  let html = `
+    <div class="security-checks">
+      <h3>🔎 التحليل الأمني التفصيلي</h3>
+
+      <p>
+        🔐 HTTPS:
+        ${checks.https?.enabled ? "✅ مفعل" : "⚠️ غير مفعل"}
+      </p>
+
+      <p>
+        🌐 DNS:
+        ${checks.dns?.resolved ? "✅ تم حل النطاق" : "❌ تعذر حل النطاق"}
+      </p>
+
+      <p>
+        🅿️ Punycode:
+        ${checks.punycode?.detected ? "⚠️ تم اكتشافه" : "✅ غير موجود"}
+      </p>
+
+      <p>
+        🔗 رابط مختصر:
+        ${checks.shortener?.detected
+          ? "⚠️ " + checks.shortener.provider
+          : "✅ ليس رابطًا مختصرًا"}
+      </p>
+
+      <p>
+        ↪️ التحويلات:
+        ${checks.redirects?.detected
+          ? "⚠️ يوجد تحويل"
+          : "✅ لا يوجد تحويل"}
+      </p>
+
+      <p>
+        🛡️ شهادة HTTPS:
+        ${
+          checks.certificate?.checked
+            ? (checks.certificate.valid
+                ? "✅ تم فحص الشهادة"
+                : "❌ مشكلة في الشهادة")
+            : "⚪ غير متاحة"
+        }
+      </p>
+
+      ${
+        checks.redirects?.finalUrl
+          ? `<p>📍 الرابط النهائي: ${escapeHtml(checks.redirects.finalUrl)}</p>`
+          : ""
+      }
+
+      ${
+        checks.certificate?.issuer
+          ? `<p>🏢 جهة إصدار الشهادة: ${escapeHtml(checks.certificate.issuer)}</p>`
+          : ""
+      }
+    </div>
+  `;
+
+  result.innerHTML += html;
+}
 
 function showResult(type,text){
 
