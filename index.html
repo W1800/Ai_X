@@ -462,16 +462,7 @@ function showSecurityChecks(checks){
           : "✅ لا يوجد تحويل"}
       </p>
 
-      <p>
-        🛡️ شهادة HTTPS:
-        ${
-          checks.certificate?.checked
-            ? (checks.certificate.valid
-                ? "✅ تم فحص الشهادة"
-                : "❌ مشكلة في الشهادة")
-            : "⚪ غير متاحة"
-        }
-      </p>
+      
 
       ${
         checks.redirects?.finalUrl
