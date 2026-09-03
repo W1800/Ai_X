@@ -4,148 +4,492 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>فحص الجهاز</title>
+<title>LinkGuard - فحص الروابط</title>
 
 <style>
-* {
-  box-sizing: border-box;
+*{
+    box-sizing:border-box;
 }
 
-body {
-  margin: 0;
-  background: #050505;
-  color: #00ff66;
-  font-family: Arial, sans-serif;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+body{
+    margin:0;
+    min-height:100vh;
+    font-family:Arial,Tahoma,sans-serif;
+    background:
+        radial-gradient(circle at top,#17220d 0,#080b0f 45%),
+        #080b0f;
+    color:#fff;
 }
 
-.box {
-  width: 90%;
-  max-width: 500px;
+.container{
+    width:92%;
+    max-width:760px;
+    margin:auto;
+    padding:45px 0;
 }
 
-h1 {
-  font-size: 30px;
+.header{
+    text-align:center;
 }
 
-#status {
-  margin: 25px 0;
-  font-size: 20px;
+.logo{
+    font-size:38px;
+    font-weight:900;
+    letter-spacing:1px;
 }
 
-.bar {
-  width: 100%;
-  height: 18px;
-  border: 1px solid #00ff66;
-  border-radius: 20px;
-  overflow: hidden;
+.logo span{
+    color:#b8df3d;
 }
 
-.progress {
-  width: 0%;
-  height: 100%;
-  background: #00ff66;
-  transition: width .2s;
+.tagline{
+    color:#9aa3ad;
+    margin-top:12px;
+    font-size:16px;
 }
 
-.warning {
-  display: none;
-  color: #ff3030;
+.scanner{
+    margin-top:35px;
+    padding:25px;
+    background:rgba(17,22,29,.95);
+    border:1px solid #27303a;
+    border-radius:22px;
+    box-shadow:0 20px 60px rgba(0,0,0,.35);
 }
 
-.prank {
-  display: none;
-  color: white;
+.label{
+    display:block;
+    margin-bottom:10px;
+    color:#d7dce2;
+    font-weight:bold;
 }
 
-button {
-  margin-top: 25px;
-  padding: 14px 30px;
-  border: 0;
-  border-radius: 12px;
-  font-size: 18px;
+.input-area{
+    display:flex;
+    gap:10px;
+}
+
+input{
+    flex:1;
+    min-width:0;
+    padding:17px;
+    border-radius:13px;
+    border:1px solid #303945;
+    background:#080b0f;
+    color:white;
+    outline:none;
+    font-size:16px;
+    direction:ltr;
+}
+
+input:focus{
+    border-color:#b8df3d;
+}
+
+button{
+    border:0;
+    border-radius:13px;
+    padding:0 25px;
+    background:#b8df3d;
+    color:#101409;
+    font-weight:900;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+.result{
+    display:none;
+    margin-top:22px;
+    padding:22px;
+    border-radius:17px;
+    background:#0b1016;
+    border:1px solid #29323d;
+}
+
+.result-title{
+    font-size:21px;
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+.status{
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:15px;
+    font-weight:bold;
+}
+
+.info{
+    padding:12px 0;
+    border-bottom:1px solid #202731;
+    word-break:break-all;
+}
+
+.green{
+    color:#b8df3d;
+}
+
+.yellow{
+    color:#ffd166;
+}
+
+.red{
+    color:#ff6262;
+}
+
+.note{
+    margin-top:18px;
+    color:#7f8994;
+    font-size:13px;
+    line-height:1.7;
+}
+
+.features{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-top:20px;
+}
+
+.feature{
+    background:#10151c;
+    border:1px solid #242c35;
+    border-radius:15px;
+    padding:18px 12px;
+    text-align:center;
+}
+
+.feature-icon{
+    font-size:27px;
+}
+
+.feature-title{
+    margin-top:9px;
+    font-weight:bold;
+}
+
+.feature-text{
+    color:#7f8994;
+    font-size:12px;
+    margin-top:6px;
+}
+
+.footer{
+    text-align:center;
+    margin-top:30px;
+    color:#555e68;
+    font-size:12px;
+}
+
+@media(max-width:600px){
+
+    .container{
+        padding-top:30px;
+    }
+
+    .logo{
+        font-size:31px;
+    }
+
+    .input-area{
+        flex-direction:column;
+    }
+
+    input{
+        width:100%;
+    }
+
+    button{
+        height:52px;
+    }
+
+    .features{
+        grid-template-columns:1fr;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="container">
 
-  <div id="loading">
-    <h1>🔍 جاري فحص الجهاز</h1>
+    <div class="header">
 
-    <div id="status">جارٍ بدء الفحص...</div>
+        <div class="logo">
+            Link<span>Guard</span>
+        </div>
 
-    <div class="bar">
-      <div class="progress" id="progress"></div>
+        <div class="tagline">
+            افحص الرابط قبل أن تفتحه
+        </div>
+
     </div>
-  </div>
 
-  <div class="warning" id="warning">
-    <h1>⚠️ تحذير!</h1>
-    <h2>تم اكتشاف نشاط غير طبيعي</h2>
-    <p>جاري تأمين الجهاز...</p>
-  </div>
 
-  <div class="prank" id="prank">
-    <h1> الله يفتح لك !</h1>
-    <h2>انتهيت </h2>
-    <p>  🖕🖕🖕🖕.</p>
-    <button onclick="location.reload()">🔄 مرة ثانية</button>
-  </div>
+    <div class="scanner">
+
+        <label class="label">
+            أدخل الرابط المراد فحصه
+        </label>
+
+        <div class="input-area">
+
+            <input
+                id="urlInput"
+                type="text"
+                placeholder="https://example.com"
+                autocomplete="off"
+            >
+
+            <button onclick="scan()">
+                فحص الرابط
+            </button>
+
+        </div>
+
+
+        <div id="result" class="result"></div>
+
+    </div>
+
+
+    <div class="features">
+
+        <div class="feature">
+            <div class="feature-icon">🛡️</div>
+            <div class="feature-title">
+                تحليل أمني
+            </div>
+            <div class="feature-text">
+                مؤشرات خطر للرابط
+            </div>
+        </div>
+
+        <div class="feature">
+            <div class="feature-icon">🔎</div>
+            <div class="feature-title">
+                تحليل النطاق
+            </div>
+            <div class="feature-text">
+                معلومات عن عنوان الموقع
+            </div>
+        </div>
+
+        <div class="feature">
+            <div class="feature-icon">⚠️</div>
+            <div class="feature-title">
+                تحذيرات
+            </div>
+            <div class="feature-text">
+                اكتشاف مؤشرات مشبوهة
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+        LinkGuard © 2026
+    </div>
 
 </div>
 
+
 <script>
 
-let progress = 0;
+function scan(){
 
-const progressBar = document.getElementById("progress");
-const status = document.getElementById("status");
+    const input =
+        document.getElementById("urlInput");
 
-const messages = [
-  "جارٍ فحص الملفات...",
-  "جارٍ فحص النظام...",
-  "جارٍ تحليل التطبيقات...",
-  "جارٍ التحقق من الأمان...",
-  "جارٍ إنهاء الفحص..."
-];
+    const result =
+        document.getElementById("result");
 
-let messageIndex = 0;
+    let value =
+        input.value.trim();
 
-const timer = setInterval(() => {
 
-  progress += Math.floor(Math.random() * 8) + 3;
+    if(!value){
 
-  if (progress >= 100) {
-    progress = 100;
-    clearInterval(timer);
+        showResult(
+            "red",
+            "أدخل رابطًا أولًا."
+        );
 
-    document.getElementById("loading").style.display = "none";
-    document.getElementById("warning").style.display = "block";
+        return;
+    }
 
-    setTimeout(() => {
 
-      document.getElementById("warning").style.display = "none";
-      document.getElementById("prank").style.display = "block";
+    if(!/^https?:\/\//i.test(value)){
+        value = "https://" + value;
+    }
 
-    }, 3000);
 
-  }
+    let url;
 
-  progressBar.style.width = progress + "%";
+    try{
 
-  if (messageIndex < messages.length) {
-    status.textContent = messages[messageIndex];
-    messageIndex++;
-  }
+        url = new URL(value);
 
-}, 500);
+    }catch{
+
+        showResult(
+            "red",
+            "الرابط غير صالح."
+        );
+
+        return;
+    }
+
+
+    const hostname =
+        url.hostname.toLowerCase();
+
+
+    let warnings = [];
+
+
+    if(url.protocol !== "https:"){
+        warnings.push(
+            "الرابط لا يستخدم HTTPS."
+        );
+    }
+
+
+    if(hostname.includes("xn--")){
+        warnings.push(
+            "النطاق يستخدم ترميزًا قد يخفي أحرفًا مشابهة."
+        );
+    }
+
+
+    if(hostname.split(".").length > 4){
+        warnings.push(
+            "النطاق يحتوي على مستويات كثيرة."
+        );
+    }
+
+
+    if(hostname.length > 60){
+        warnings.push(
+            "اسم النطاق طويل بشكل غير معتاد."
+        );
+    }
+
+
+    if(warnings.length === 0){
+
+        result.innerHTML = `
+
+            <div class="result-title">
+                الفحص المبدئي
+            </div>
+
+            <div class="status green">
+                ✓ لم تظهر مؤشرات واضحة على الخطر
+            </div>
+
+            <div class="info">
+                <strong>النطاق:</strong>
+                ${escapeHtml(hostname)}
+            </div>
+
+            <div class="info">
+                <strong>البروتوكول:</strong>
+                ${escapeHtml(url.protocol)}
+            </div>
+
+            <div class="info">
+                <strong>الرابط:</strong>
+                ${escapeHtml(url.href)}
+            </div>
+
+            <div class="note">
+                هذه نتيجة فحص مبدئي وليست ضمانًا بأن الرابط آمن.
+                سيتم في المرحلة التالية ربط الموقع بمحرك فحص أمني حقيقي.
+            </div>
+
+        `;
+
+    }else{
+
+        result.innerHTML = `
+
+            <div class="result-title">
+                الفحص المبدئي
+            </div>
+
+            <div class="status yellow">
+                ⚠️ توجد مؤشرات تحتاج إلى الحذر
+            </div>
+
+            <div class="info">
+                <strong>النطاق:</strong>
+                ${escapeHtml(hostname)}
+            </div>
+
+            <div class="info yellow">
+                <strong>الملاحظات:</strong><br>
+                ${warnings.map(
+                    x => "• " + escapeHtml(x)
+                ).join("<br>")}
+            </div>
+
+            <div class="note">
+                لا تفتح الرابط إذا كنت لا تثق بمصدره.
+                سيتم لاحقًا إضافة فحص متعدد المصادر.
+            </div>
+
+        `;
+    }
+
+
+    result.style.display = "block";
+}
+
+
+function showResult(type,text){
+
+    const result =
+        document.getElementById("result");
+
+    result.style.display = "block";
+
+    result.innerHTML =
+        `<div class="status ${type}">
+            ${text}
+        </div>`;
+}
+
+
+function escapeHtml(text){
+
+    return text
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+document
+.getElementById("urlInput")
+.addEventListener(
+    "keydown",
+    function(event){
+
+        if(event.key === "Enter"){
+            scan();
+        }
+
+    }
+);
 
 </script>
 
